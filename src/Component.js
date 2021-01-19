@@ -1,18 +1,20 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  useMemo,
+} from 'react';
 import randomColor from 'randomcolor';
 
 export default function Component() {
   const [count, setCount] = useState(30);
-  const [todo, setTodo] = useState('');
-
   const inputRef = useRef();
-  const todoRef = useRef('');
 
-  const [color, setColor] = useState(null);
-  useEffect(() => {
-    setColor(randomColor());
-    inputRef.current.focus();
-  }, [count]);
+  const [color, setColor] = useState(randomColor());
+  useEffect(() => inputRef.current.focus(), [count]);
+
+  const calculate = useCallback(<Calculate />, [count]);
 
   return (
     <div style={{ borderTop: `10px solid ${color}` }}>
@@ -23,6 +25,7 @@ export default function Component() {
       <button onClick={() => setCount((currentCount) => currentCount + 1)}>
         +
       </button>
+      <button onClick={() => setColor(randomColor())}>Change Color</button>
       <hr />
       <input
         ref={inputRef}
@@ -30,12 +33,7 @@ export default function Component() {
         onChange={(e) => setCount(e.target.value)}
         value={count}
       />
-      <input
-        type="text"
-        ref={todoRef}
-        value={todo}
-        onChange={(e) => setTodo(e.target.value)}
-      />
+      {calculate}
     </div>
   );
 }
